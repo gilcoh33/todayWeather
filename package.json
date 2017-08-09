@@ -1,0 +1,28 @@
+{
+  "name": "today_weather",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "bunyan": "^1.8.12",
+    "koa": "^2.3.0",
+    "koa-body-parser": "^1.1.2",
+    "koa-cors": "0.0.16",
+    "koa-mount": "^3.0.0",
+    "koa-router": "^7.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gilcoh33/todayWeather.git"
+  },
+  "author": "Gil Cohen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gilcoh33/todayWeather/issues"
+  },
+  "homepage": "https://github.com/gilcoh33/todayWeather#readme"
+}
