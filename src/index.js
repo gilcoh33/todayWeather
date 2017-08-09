@@ -2,6 +2,7 @@
 
 const pjson = require('../package.json')
   , koa        = require('koa')
+  , config     = require('./config.js')
   , bodyParser = require('koa-body-parser')
   , router = require('koa-router')()
   , app = new koa()
@@ -13,7 +14,7 @@ const pjson = require('../package.json')
 app.name = pjson.name;
 
 //Mini apps
-// const sanity = require('./lib/sanity');
+const getlocation = require('./lib/weather');
 
 // Response Handlers
 app.use(cors({credentials: true}));
@@ -22,6 +23,7 @@ app.use(router.allowedMethods());
 app.use(router.routes());
 
 // Mount child apps
+app.use(mount(getlocation));
 
 
 //Health Route
