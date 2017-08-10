@@ -8,6 +8,6 @@ app.use(bodyParser());
 app.use(router.allowedMethods());
 app.use(router.routes());
 
-router.get('/getlocation/:city', controller.getLocationId);
+router.get('/location/:city', controller.getLocationId);
 
 module.exports = app;
