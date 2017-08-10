@@ -8,6 +8,6 @@ app.use(bodyParser());
 app.use(router.allowedMethods());
 app.use(router.routes());
 
-router.get('/location/:city', controller.getLocationId);
+router.get('/location/:city', controller.getWeather);
 
 module.exports = app;

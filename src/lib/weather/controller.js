@@ -1,25 +1,22 @@
 const axios = require('axios'),
-  API = require('../../config').API;
+  API = require('../../config').API,
+  _ = require('lodash');
 
-async function getLocationId(ctx, next) {
+async function getWeather(ctx, next) {
   let location = ctx.params.city;
   try {
     let res = await axios.get(API.weatherApi + API.getLocationID + location);
-    if(res.data.length) {
-      res.data.forEach(function (obj) {
-        if (obj.title.toLowerCase() === location.toLowerCase()) {
-          ctx.body = {
-            msg: "City found",
-            id: obj.woeid
-          };
-          ctx.status = 200
-        } else {
-          ctx.body = {
-            msg: "City was not found"
-          };
-          ctx.status = 400
-        }
-      });
+    let obj = _.filter(res.data, (city) => {
+      return city.title.toLowerCase() === location.toLowerCase()
+    });
+    if(obj.length){
+      let res = await axios.get(API.weatherApi + API.getWeather + obj[0].woeid)
+      ctx.body = {
+        msg: "City was found",
+        city: obj[0].title,
+        id: obj[0].woeid,
+        temp: res.data.consolidated_weather[0].the_temp
+      }
     } else {
       ctx.body = {
         msg: "City was not found"
@@ -33,5 +30,5 @@ async function getLocationId(ctx, next) {
 
 
 module.exports = {
-  getLocationId: getLocationId
+  getWeather: getWeather
 };
