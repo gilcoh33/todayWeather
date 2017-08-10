@@ -12,9 +12,9 @@ async function getWeather(ctx, next) {
     if(obj.length){
       let res = await axios.get(API.weatherApi + API.getWeather + obj[0].woeid)
       ctx.body = {
-        msg: "City was found",
         city: obj[0].title,
         id: obj[0].woeid,
+        time: res.data.consolidated_weather[0].applicable_date,
         temp: res.data.consolidated_weather[0].the_temp
       }
     } else {
