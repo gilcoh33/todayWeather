@@ -5,7 +5,7 @@ let logLevel = 'debug';
 
 
 module.exports = bunyan.createLogger({
-  name: `today-weather-${pjson.name}`,
+  name: `${pjson.name}`,
   serializers: bunyan.stdSerializers,
   src: true,
   streams: [
