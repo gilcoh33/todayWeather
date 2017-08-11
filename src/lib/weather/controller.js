@@ -14,15 +14,23 @@ async function getWeather(ctx, next) {
     if(obj.length){
       logger.debug(`City found: ${obj[0].title}`);
       let res = await axios.get(API.weatherApi + API.getWeather + obj[0].woeid);
+      let city = obj[0].title;
       let temp = res.data.consolidated_weather[0].the_temp.toFixed();
       let date = res.data.consolidated_weather[0].applicable_date;
       ctx.body = {
-        city: obj[0].title,
+        city: city,
         id: obj[0].woeid,
         time: date,
         temp: temp
       };
-      cacher.setKey(obj[0].title, temp)
+      let keyCheck = await cacher.existsKey(city);
+      console.log(keyCheck)
+      if(keyCheck === 0){
+        logger.debug(`${city} not exist in Redis - Going to set a key`);
+        cacher.setKey(city, temp)
+      } else {
+        logger.debug(`${city} already located in Redis - Getting the key`);
+      }
     } else {
       logger.debug(`No city found`);
       ctx.body = {
