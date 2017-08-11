@@ -10,12 +10,14 @@ async function getWeather(ctx, next) {
       return city.title.toLowerCase() === location.toLowerCase()
     });
     if(obj.length){
-      let res = await axios.get(API.weatherApi + API.getWeather + obj[0].woeid)
+      let res = await axios.get(API.weatherApi + API.getWeather + obj[0].woeid);
+      let temp = res.data.consolidated_weather[0].the_temp.toFixed();
+      let date = res.data.consolidated_weather[0].applicable_date;
       ctx.body = {
         city: obj[0].title,
         id: obj[0].woeid,
-        time: res.data.consolidated_weather[0].applicable_date,
-        temp: res.data.consolidated_weather[0].the_temp
+        time: date,
+        temp: temp
       }
     } else {
       ctx.body = {
