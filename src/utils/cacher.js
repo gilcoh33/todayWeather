@@ -1,42 +1,40 @@
 const CONFIG = require('../config').REDIS,
-  redis = require('redis');
+  redis = require('redis'),
+  Promise = require('bluebird'),
+  logger = require('../utils/logger');
 
 
-async function getKey(city){
-  try {
-    let client = redis.createClient(CONFIG.port, CONFIG.host);
-    await client.get(city, function(err, reply){
-      return reply
-    });
-  } catch (err){
-    logger.error(`Got Error while getting a key: ${err}`)
-  }
+// Promisify RedisClient prototype
+Promise.promisifyAll(redis.RedisClient.prototype);
+Promise.promisifyAll(redis.Multi.prototype);
+
+let CLIENT;
+
+function _newClient(){
+  return new Promise(function(resolve, reject){
+    try{
+      let client = redis.createClient(CONFIG.port, CONFIG.host);
+      client.on("ready", function () {
+        resolve(client);
+      });
+      client.on("error", reject);
+    }
+    catch(err){
+      logger.error("Cannot Connect to Redis");
+      reject(err);
+    }
+  })
 }
 
-async function setKey(city, temp) {
-  try {
-    let client = redis.createClient(CONFIG.port, CONFIG.host);
-    await client.set(city, temp, function(err,reply){
-      return reply
-    });
-  } catch (err) {
-    logger.error(`Got Error while setting a key: ${err}`)
-  }
-}
 
-async function existsKey(city) {
-  try {
-    let client = redis.createClient(CONFIG.port, CONFIG.host);
-    await client.exists(city, function(err,reply){
-      return reply
-    });
-  } catch (err) {
-    logger.error(`Got Error while checking if a key exists: ${err}`)
+async function getClient(){
+  if(!CLIENT || !CLIENT.connected){
+    logger.debug('Initializing new redis client');
+    let CLIENT = await _newClient();
+    return CLIENT
   }
 }
 
 module.exports = {
-  getKey:getKey,
-  setKey:setKey,
-  existsKey:existsKey
+  getClient: getClient
 };

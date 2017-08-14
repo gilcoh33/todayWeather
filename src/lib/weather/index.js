@@ -9,5 +9,6 @@ app.use(router.allowedMethods());
 app.use(router.routes());
 
 router.get('/location/:city', controller.getWeather);
+//router.get('/location/:city', controller.redisCheck);
 
 module.exports = app;
